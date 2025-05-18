@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/home/ubuntu/Ollama
-ExecStart=/home/ubuntu/Ollama/.venv/bin/python -m app
+ExecStart=/home/ubuntu/Ollama/.venv/bin/python /home/ubuntu/Ollama/app.py
 Restart=always
 
 [Install]
