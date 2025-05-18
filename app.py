@@ -1,44 +1,43 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from flask import Flask, jsonify, send_from_directory
 from ollama import chat
-import json
+import os
+import random
 
-app = FastAPI()
+app = Flask(__name__, static_folder="frontend")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-def generate_quiz_questions(topic="geography", count=3):
-    messages = [
-        {
-            "role": "system",
-            "content": (
-                f"Generate {count} multiple-choice questions in {topic}. "
-                "Each question must include 4 answer options and the correct answer index (0-based). "
-                "Format your response strictly as a JSON array: "
-                '[{"question": "...", "options": ["...", "...", "...", "..."], "answer": 1}, ...]'
-            )
-        },
-        {"role": "user", "content": f"Generate {count} questions."}
-    ]
-    response = chat(model='gemma3:1b', messages=messages)
+def generate_question():
+    response = chat(model='gemma3:1b', messages=[
+        {'role': 'system', 'content': 'Generate a geography quiz question with 4 multiple choice answers. Return only JSON with keys: question, options (list of 4), and answer (correct option).'},
+        {'role': 'user', 'content': 'Create a question.'}
+    ])
     try:
-        return json.loads(response['message']['content'])
-    except Exception:
-        return []
+        data = eval(response['message']['content'])
+        return {
+            "question": data["question"],
+            "options": data["options"],
+            "answer": data["answer"]
+        }
+    except:
+        return {
+            "question": "What is the capital of France?",
+            "options": ["Berlin", "Madrid", "Paris", "Rome"],
+            "answer": "Paris"
+        }
 
-@app.get("/quiz")
-async def get_quiz():
-    quiz = generate_quiz_questions()
-    if not quiz:
-        return JSONResponse(content={"error": "Failed to generate quiz"}, status_code=500)
-    return quiz
+@app.route("/")
+def index():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.route("/<path:path>")
+def static_files(path):
+    return send_from_directory(app.static_folder, path)
+
+@app.route("/api/quiz")
+def api_quiz():
+    questions = [generate_question() for _ in range(3)]
+    for q in questions:
+        random.shuffle(q["options"])
+    return jsonify(questions)
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    app.run(host="0.0.0.0", port=8000, debug=True)
