@@ -1,0 +1,11 @@
+[Unit]
+Description=Simple Python Server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/ubuntu/Ollama
+ExecStart=/home/ubuntu/Ollama/.venv/bin/python -m app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

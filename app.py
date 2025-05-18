@@ -1,8 +1,13 @@
 from ollama import chat
 from ollama import ChatResponse
 
-response: ChatResponse = chat(model='gemma3:1b', messages=[
-    {'role': 'system', 'content': 'You are a helpful assistant that identifies which image filter a user wants to apply. Just reply with the filter name like "blur", "rotate", "segment", "contour", "concat", "salt n pepper" or "detect".'},
-    {'role': 'user', 'content': 'can you turn this image clockwise?'}
-])
-print(response['message']['content'])  # "rotate" is expected
+response: ChatResponse = chat(
+    model='gemma3:1b',
+    messages=[
+        {'role': 'system', 'content': 'Generate a quiz question asking about a country with 4 multiple choice answers to guess the corret capital. Mark the correct answer clearly.'},
+        {'role': 'user', 'content': 'Generate a question now.'}
+    ],
+    options={'temperature': 0.8}
+)
+
+print(response['message']['content'])
