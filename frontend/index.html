@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .quiz-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option {
+      padding: 15px;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #eaf1ff;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .option:hover {
+      background-color: #d0e5ff;
+    }
+
+    .correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+
+    .incorrect {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+    }
+
+    .score {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-box">
+    <h2 id="question-text">Loading...</h2>
+    <div class="options" id="options-container"></div>
+    <div class="score" id="score-container" style="display: none;"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the capital of France?",
+        options: ["Berlin", "Madrid", "Paris", "Rome"],
+        answer: 2
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Earth", "Venus", "Saturn", "Mars"],
+        answer: 3
+      },
+      {
+        question: "What is the largest ocean on Earth?",
+        options: ["Atlantic", "Indian", "Pacific", "Arctic"],
+        answer: 2
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    const questionText = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const scoreContainer = document.getElementById("score-container");
+
+    function showQuestion(index) {
+      const q = questions[index];
+      questionText.textContent = q.question;
+      optionsContainer.innerHTML = "";
+
+      q.options.forEach((opt, i) => {
+        const div = document.createElement("div");
+        div.className = "option";
+        div.textContent = `${String.fromCharCode(65 + i)}. ${opt}`;
+        div.onclick = () => checkAnswer(div, i === q.answer);
+        optionsContainer.appendChild(div);
+      });
+    }
+
+    function checkAnswer(element, isCorrect) {
+      const options = document.querySelectorAll('.option');
+      options.forEach(opt => opt.onclick = null);
+
+      element.classList.add(isCorrect ? 'correct' : 'incorrect');
+      if (isCorrect) score++;
+
+      setTimeout(() => {
+        current++;
+        if (current < questions.length) {
+          showQuestion(current);
+        } else {
+          questionText.style.display = "none";
+          optionsContainer.style.display = "none";
+          scoreContainer.style.display = "block";
+          scoreContainer.textContent = `Your Score: ${score} / ${questions.length}`;
+        }
+      }, 800);
+    }
+
+    // Start quiz
+    showQuestion(current);
+  </script>
+</body>
+</html>
