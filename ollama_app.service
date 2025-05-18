@@ -3,8 +3,8 @@ Description=Ollama Server
 After=network.target
 
 [Service]
-WorkingDirectory=/home/ubuntu/Ollama
-ExecStart=/home/ubuntu/OllamaProject/.venv/bin/python /home/ubuntu/OllamaProject/app.py
+WorkingDirectory=/home/ubuntu/OllamaProject
+ExecStart=/home/ubuntu/OllamaProject/.venv/bin/python -m polybot.app
 Restart=always
 
 [Install]
