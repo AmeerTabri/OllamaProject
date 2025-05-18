@@ -32,12 +32,11 @@ def index():
 def static_files(path):
     return send_from_directory(app.static_folder, path)
 
-@app.route("/api/quiz")
-def api_quiz():
-    questions = [generate_question() for _ in range(3)]
-    for q in questions:
-        random.shuffle(q["options"])
-    return jsonify(questions)
+@app.route("/api/question")
+def api_question():
+    question = generate_question()
+    random.shuffle(question["options"])
+    return jsonify(question)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

@@ -42,34 +42,36 @@
 <body>
   <h1>Ollama Quiz</h1>
   <div id="quiz-container">
-    <p>Loading quiz...</p>
+    <p>Loading question...</p>
   </div>
   <div id="score"></div>
 
   <script>
-    let currentQuestion = 0;
+    let questionNumber = 0;
     let score = 0;
-    let quiz = [];
+    let currentQuestion = null;
 
-    async function loadQuiz() {
-      const res = await fetch("http://localhost:8000/quiz");
-      quiz = await res.json();
+    async function loadQuestion() {
+      const container = document.getElementById("quiz-container");
+      container.innerHTML = "<p>Loading question...</p>";
+      
+      const res = await fetch("http://localhost:8000/api/question");
+      currentQuestion = await res.json();
       showQuestion();
     }
 
     function showQuestion() {
-      if (currentQuestion >= quiz.length) {
+      if (questionNumber >= 3) {
         document.getElementById("quiz-container").innerHTML = "";
-        document.getElementById("score").textContent = `You scored ${score} out of ${quiz.length}`;
+        document.getElementById("score").textContent = `You scored ${score} out of 3`;
         return;
       }
 
-      const q = quiz[currentQuestion];
       const container = document.getElementById("quiz-container");
       container.innerHTML = `
-        <div class="question">${q.question}</div>
-        ${q.options.map((opt, i) => `
-          <div class="option" onclick="checkAnswer(this, ${i}, ${q.answer})">${opt}</div>
+        <div class="question">${currentQuestion.question}</div>
+        ${currentQuestion.options.map((opt) => `
+          <div class="option" onclick="checkAnswer(this, '${opt}', '${currentQuestion.answer}')">${opt}</div>
         `).join("")}
       `;
     }
@@ -83,16 +85,24 @@
         score++;
       } else {
         el.classList.add("wrong");
-        options[correct].classList.add("correct");
+        options.forEach(opt => {
+          if (opt.textContent === correct) {
+            opt.classList.add("correct");
+          }
+        });
       }
 
       setTimeout(() => {
-        currentQuestion++;
-        showQuestion();
+        questionNumber++;
+        if (questionNumber < 3) {
+          loadQuestion();
+        } else {
+          showQuestion(); // This will show the final score
+        }
       }, 1000);
     }
 
-    loadQuiz();
+    loadQuestion();
   </script>
 </body>
 </html>
