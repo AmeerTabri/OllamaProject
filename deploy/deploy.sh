@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to project directory
-PROJECT_DIR="/home/ameertabri/OllamaProject"
+PROJECT_DIR="/home/ubuntu/OllamaProject"
 cd "$PROJECT_DIR" || { echo "❌ Project directory not found: $PROJECT_DIR"; exit 1; }
 
 # Ensure required packages are installed
