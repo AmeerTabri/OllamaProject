@@ -3,7 +3,7 @@ name: Ollama Quiz App Deploy
 on:
   push:
     branches:
-      - deploy
+      - main
   workflow_dispatch:
 
 env:
