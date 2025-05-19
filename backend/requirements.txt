@@ -1,0 +1,7 @@
+ollama
+fastapi
+uvicorn
+httpx
+flask_cors
+flask==3.0.2
+ollama==0.1.6 
