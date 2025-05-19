@@ -1,0 +1,68 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from quiz_generator import generate_quiz
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+quiz_index = 0
+quizzes = [
+    {
+        "question": "What is the capital of France?",
+        "options": ["London", "Paris", "Berlin", "Madrid"],
+        "answer": 1
+    },
+    {
+        "question": "Which planet is known as the Red Planet?",
+        "options": ["Venus", "Mars", "Jupiter", "Saturn"],
+        "answer": 1
+    },
+    {
+        "question": "What is the largest mammal in the world?",
+        "options": ["African Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+        "answer": 1
+    }
+]
+
+
+@app.get("/quiz")
+async def get_quiz():
+    global quiz_index
+    quiz = quizzes[quiz_index]
+    quiz_index = (quiz_index + 1) % len(quizzes)
+    return quiz
+
+
+# @app.get("/quiz")
+# async def get_quiz():
+#     try:
+#         print("Received request for quiz")
+#         quiz = generate_quiz()
+#         print("Generated quiz:", quiz)
+        
+#         if not quiz:
+#             print("Quiz generation failed")
+#             return JSONResponse(
+#                 content={"error": "Failed to generate quiz - no questions returned"}, 
+#                 status_code=500
+#             )
+        
+#         return quiz
+#     except Exception as e:
+#         print(f"Error in get_quiz endpoint: {str(e)}")
+#         return JSONResponse(
+#             content={"error": f"Failed to generate quiz: {str(e)}"}, 
+#             status_code=500
+#         )
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
