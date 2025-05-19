@@ -3,7 +3,7 @@ name: Ollama Deploy
 on:
   push:
     branches:
-      - main
+      - deply
   workflow_dispatch:
 
 env:
