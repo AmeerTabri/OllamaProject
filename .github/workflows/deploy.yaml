@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: deploy  # Specify the branch to checkout
 
       - name: Configure SSH
         env:
@@ -37,7 +39,7 @@ jobs:
 
       - name: Clone or Pull Repo on EC2
         run: |
-          ssh ec2 "if [ -d ~/${REPO_NAME} ]; then cd ~/${REPO_NAME} && git pull origin main; else git clone ${REPO_URL} ~/${REPO_NAME}; fi"
+          ssh ec2 "if [ -d ~/${REPO_NAME} ]; then cd ~/${REPO_NAME} && git pull origin deploy; else git clone -b deploy ${REPO_URL} ~/${REPO_NAME}; fi"
 
       - name: Execute deploy script
         run: |
