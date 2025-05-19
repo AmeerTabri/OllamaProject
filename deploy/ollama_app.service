@@ -3,11 +3,10 @@ Description=Ollama Quiz App Service
 After=network.target
 
 [Service]
-User=ameertabri
 WorkingDirectory=/home/ameertabri/OllamaProject
-Environment="PATH=/home/ameertabri/OllamaProject/venv/bin"
 ExecStart=/home/ameertabri/OllamaProject/venv/bin/python backend/main.py
 Restart=always
+User=ubuntu
 
 [Install]
 WantedBy=multi-user.target
