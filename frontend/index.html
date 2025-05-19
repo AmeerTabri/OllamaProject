@@ -2,122 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Ollama Quiz</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 50px auto;
-      text-align: center;
-    }
-    .question {
-      font-size: 1.2em;
-      margin-bottom: 20px;
-    }
-    .option {
-      display: block;
-      margin: 10px auto;
-      padding: 10px;
-      width: 100%;
-      max-width: 400px;
-      border: 2px solid #ccc;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .option.correct {
-      background-color: #c8f7c5;
-      border-color: green;
-    }
-    .option.wrong {
-      background-color: #f7c5c5;
-      border-color: red;
-    }
-    #score {
-      font-size: 1.5em;
-      margin-top: 30px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz App</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Ollama Quiz</h1>
-  <div id="quiz-container">
-    <p>Loading question...</p>
+  <div class="quiz-box">
+    <h2 id="question-text">Loading...</h2>
+    <div class="options" id="options-container"></div>
+    <div class="score" id="score-container" style="display: none;"></div>
   </div>
-  <div id="score"></div>
 
-  <script>
-    let questionNumber = 0;
-    let score = 0;
-    let currentQuestion = null;
-
-    async function loadQuestion() {
-      const container = document.getElementById("quiz-container");
-      container.innerHTML = "<p>Loading question...</p>";
-      
-      try {
-        const res = await fetch("http://localhost:8000/quiz");
-        currentQuestion = await res.json();
-        
-        if (!currentQuestion || !currentQuestion.options) {
-          throw new Error("Invalid question format received");
-        }
-        
-        showQuestion();
-      } catch (error) {
-        console.error("Error loading question:", error);
-        container.innerHTML = "<p>Error loading question. Please try again.</p>";
-      }
-    }
-
-    function showQuestion() {
-      if (questionNumber >= 3) {
-        document.getElementById("quiz-container").innerHTML = "";
-        document.getElementById("score").textContent = `You scored ${score} out of 3`;
-        return;
-      }
-
-      if (!currentQuestion || !currentQuestion.options) {
-        document.getElementById("quiz-container").innerHTML = "<p>Error: Invalid question format</p>";
-        return;
-      }
-
-      const container = document.getElementById("quiz-container");
-      container.innerHTML = `
-        <div class="question">${currentQuestion.question}</div>
-        ${currentQuestion.options.map((opt) => `
-          <div class="option" onclick="checkAnswer(this, '${opt}', '${currentQuestion.answer}')">${opt}</div>
-        `).join("")}
-      `;
-    }
-
-    function checkAnswer(el, selected, correct) {
-      const options = document.querySelectorAll(".option");
-      options.forEach(opt => opt.onclick = null); // disable further clicks
-
-      if (selected === correct) {
-        el.classList.add("correct");
-        score++;
-      } else {
-        el.classList.add("wrong");
-        options.forEach(opt => {
-          if (opt.textContent === correct) {
-            opt.classList.add("correct");
-          }
-        });
-      }
-
-      setTimeout(() => {
-        questionNumber++;
-        if (questionNumber < 3) {
-          loadQuestion();
-        } else {
-          showQuestion(); // This will show the final score
-        }
-      }, 1000);
-    }
-
-    loadQuestion();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

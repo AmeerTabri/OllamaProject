@@ -2,18 +2,16 @@ from ollama import chat
 import json
 
 
-def generate_quiz(topic="geography", count=1):
+def generate_quiz(topic="geography"):
     messages = [
         {
             "role": "system",
-            "content": (
-                f"Generate multiple-choice questions in {topic}. "
-                "The question must include 4 answer options and the correct answer index (0-based). "
-                "Format your response strictly as a JSON array: "
-                '[{"question": "...", "options": ["...", "...", "...", "..."], "answer": 1}, ...]'
-            )
+            "content": f'Generate a multiple-choice question in {topic}. '
+                    'Format your response in this exact format: '
+                    'question | optionA | optionB | optionC | optionD | the index of the correct option (0-based)'
+                    'Example: What is the capital of France? | London | Paris | Berlin | Madrid | 1'
         },
-        {"role": "user", "content": f"Generate {count} questions."}
+        {"role": "user", "content": "Generate one question."}
     ] 
 
     try:
@@ -21,46 +19,40 @@ def generate_quiz(topic="geography", count=1):
         return response['message']['content']
     except Exception as e:
         print("Error fetching Ollama response:", e)
-        return "[]"
+        return ""
 
 
 def parse_quiz_response(raw_response: str): 
     try:
-        return json.loads(raw_response)
-    except json.JSONDecodeError as e:
-        print("Initial JSON parsing failed, attempting to fix common issues...")
+        # Split by pipe and strip whitespace
+        parts = [part.strip() for part in raw_response.split('|')]
         
-        # Try to clean up the response
-        cleaned_response = raw_response.strip('` \n')  # remove backticks, newlines, spaces
-        
-        # Try to find JSON array content
-        start = cleaned_response.find('[')
-        end = cleaned_response.rfind(']') + 1
-        if start != -1 and end != 0:
-            json_str = cleaned_response[start:end]
-            try:
-                return json.loads(json_str)
-            except json.JSONDecodeError as e2:
-                print("Failed to parse extracted JSON:", e2)
-                print("Extracted content was:", json_str)
-         
-        return []
+        if len(parts) != 6:
+            print("Invalid format: expected 6 parts separated by |")
+            return {}
+            
+        return {
+            "question": parts[0],
+            "options": parts[1:5],
+            "answer": int(parts[5])
+        }
+    except Exception as e:
+        print("Error parsing response:", e)
+        return {}
 
 
-def print_quiz(questions):
-    if not questions:
-        print("No questions available.")
+def print_quiz(question):
+    """Print the quiz question in a nicely formatted way."""
+    if not question or not isinstance(question, dict):
+        print("No question available.")
         return
-    
-    print("\n=== QUIZ ===")
-    for i, q in enumerate(questions, 1):
-        print(f"\nQuestion {i}:")
-        print(f"Q: {q['question']}")
-        for j, option in enumerate(q['options']):
-            print(f"  {j+1}. {option}")
-        print(f"Correct Answer: {q['options'][q['answer']]}")
-        print("\n" + "="*12) 
 
+    print("\n=== QUIZ ===\n")
+    print(f"Q: {question['question']}")
+    for j, option in enumerate(question['options']):
+        print(f"  {j+1}. {option}")
+    print(f"Correct Answer: {question['options'][question['answer']]}")
+    print("\n" + "="*12)
 
 
 if __name__ == "__main__":
