@@ -44,3 +44,4 @@ jobs:
       - name: Execute deploy script
         run: |
           ssh ec2 "cd ~/${REPO_NAME} && bash deploy/deploy.sh"
+
