@@ -55,15 +55,30 @@
       const container = document.getElementById("quiz-container");
       container.innerHTML = "<p>Loading question...</p>";
       
-      const res = await fetch("http://localhost:8000/api/question");
-      currentQuestion = await res.json();
-      showQuestion();
+      try {
+        const res = await fetch("http://localhost:8000/quiz");
+        currentQuestion = await res.json();
+        
+        if (!currentQuestion || !currentQuestion.options) {
+          throw new Error("Invalid question format received");
+        }
+        
+        showQuestion();
+      } catch (error) {
+        console.error("Error loading question:", error);
+        container.innerHTML = "<p>Error loading question. Please try again.</p>";
+      }
     }
 
     function showQuestion() {
       if (questionNumber >= 3) {
         document.getElementById("quiz-container").innerHTML = "";
         document.getElementById("score").textContent = `You scored ${score} out of 3`;
+        return;
+      }
+
+      if (!currentQuestion || !currentQuestion.options) {
+        document.getElementById("quiz-container").innerHTML = "<p>Error: Invalid question format</p>";
         return;
       }
 
