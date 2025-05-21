@@ -7,16 +7,64 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> 
 </head>
 <body>
-  <div class="question-counter" id="question-counter">Question 1/5</div>
-  <div class="quiz-box">
-    <h2 id="question-text">Loading Question...</h2>
-    <div class="options" id="options-container"></div>
-    <div class="score" id="score-container" style="display: none;"></div>
+  <!-- Quiz Setup Section -->
+  <div id="quiz-setup" class="quiz-setup-box">
+    <h1>Start Your Quiz</h1>
+    
+    <div class="setup-section">
+      <h2>Select Topic</h2>
+      <div class="topic-options">
+        <button class="topic-btn" data-topic="history">History</button>
+        <button class="topic-btn" data-topic="geography">Geography</button>
+        <button class="topic-btn" data-topic="physics">Physics</button>
+        <button class="topic-btn" data-topic="computer-science">Computer Science</button>
+        <button class="topic-btn" data-topic="football">Football</button>
+        <button class="topic-btn" data-topic="capitals">Country Capitals</button>
+        <button class="topic-btn" data-topic="space">Astronomy</button>
+        <button class="topic-btn" data-topic="animals">Animals & Nature</button>
+      </div>
+    </div>
+
+    <div class="setup-section">
+      <h2>Number of Questions</h2>
+      <div class="question-count">
+        <input type="range" id="questionCount" min="3" max="10" value="5">
+        <span id="questionCountValue">5</span> Questions
+      </div>
+    </div>
+
+    <div class="setup-section">
+      <h2>Difficulty Level</h2>
+      <div class="difficulty-options">
+        <button class="difficulty-btn" data-difficulty="easy">
+          <span class="difficulty-icon">⭐</span>
+          <span class="difficulty-text">Easy</span>
+        </button>
+        <button class="difficulty-btn" data-difficulty="medium">
+          <span class="difficulty-icon">⭐⭐</span>
+          <span class="difficulty-text">Medium</span>
+        </button>
+        <button class="difficulty-btn" data-difficulty="hard">
+          <span class="difficulty-icon">⭐⭐⭐</span>
+          <span class="difficulty-text">Hard</span>
+        </button>
+      </div>
+    </div>
+
+    <button id="startQuiz" class="start-button" disabled>Start Quiz</button>
   </div>
-  <button id="next-button" class="next-button" style="display: none;">Next</button>
-  <div class="result-buttons" style="display: none;">
+
+  <!-- Quiz Section -->
+  <div id="quiz-section" class="quiz-box" style="display: none;">
+    <div id="question-counter" class="question-counter">Question 1/5</div>
+    <h2 id="question-text"></h2>
+    <div id="options-container" class="options"></div>
+    <div id="score-container" class="score" style="display: none;"></div>
+  </div>
+  <button id="next-button" class="next-button">Next</button>
+  <div class="result-buttons">
     <button id="new-quiz-button" class="result-button">New Quiz</button>
-    <button id="restart-quiz-button" class="result-button">Restart Quiz</button>
+    <button id="restart-quiz-button" class="result-button">Restart</button>
   </div>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
