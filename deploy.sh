@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~/Ollama
+cd ~/OllamaProject
 
 # Step 1: Create virtual environment if it doesn't exist
 if [ ! -d ".venv" ]; then
