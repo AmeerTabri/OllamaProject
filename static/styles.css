@@ -59,13 +59,18 @@ h2 {
 }
 
 .correct {
-  background-color: #d4edda;
-  border-color: #28a745;
+  border: 2px solid #28a745;
+  background-color: #e6f9eb;
 }
 
 .incorrect {
+  border: 2px solid #dc3545;
   background-color: #f8d7da;
-  border-color: #dc3545;
+}
+
+.show-correct {
+  border: 2px solid #28a745;
+  background-color: #eaf1ff;
 }
 
 .score {

@@ -43,11 +43,10 @@ def get_quiz():
     global quiz_index
     quiz = quizzes[quiz_index]
     quiz_index = (quiz_index + 1) % len(quizzes)
-    return jsonify(quiz)
-    # If you want dynamic quiz generation from Ollama:
-    # raw = generate_quiz()
-    # parsed = parse_quiz_response(raw)
-    # return jsonify(parsed)
+    return jsonify(quiz) 
+    raw = generate_quiz()
+    parsed = parse_quiz_response(raw)
+    return jsonify(parsed)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)
