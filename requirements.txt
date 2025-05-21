@@ -1,5 +1,7 @@
 flask==3.0.2
 ollama==0.1.6
+flask-cors
 fastapi
 uvicorn
 httpx
+jinja2

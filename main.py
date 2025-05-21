@@ -1,17 +1,9 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from flask import Flask, jsonify, render_template
+from flask_cors import CORS
 from quiz_generator import generate_quiz, parse_quiz_response
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
+app = Flask(__name__)
+CORS(app)
 
 quiz_index = 0
 quizzes = [
@@ -39,44 +31,23 @@ quizzes = [
         "question": "What is the chemical symbol for Silver?",
         "options": ["Ag", "Au", "Cu", "Fe"],
         "answer": 0
-    } 
+    }
 ]
 
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-@app.get("/quiz")
-async def get_quiz():
+@app.route("/quiz")
+def get_quiz():
     global quiz_index
     quiz = quizzes[quiz_index]
     quiz_index = (quiz_index + 1) % len(quizzes)
-    return quiz
-    raw = generate_quiz() 
-    parsed = parse_quiz_response(raw)
-    return parsed
-
-
-# @app.get("/quiz")
-# async def get_quiz():
-#     try:
-#         print("Received request for quiz")
-#         quiz = generate_quiz()
-#         print("Generated quiz:", quiz)
-        
-#         if not quiz:
-#             print("Quiz generation failed")
-#             return JSONResponse(
-#                 content={"error": "Failed to generate quiz - no questions returned"}, 
-#                 status_code=500
-#             )
-        
-#         return quiz
-#     except Exception as e:
-#         print(f"Error in get_quiz endpoint: {str(e)}")
-#         return JSONResponse(
-#             content={"error": f"Failed to generate quiz: {str(e)}"}, 
-#             status_code=500
-#         )
+    return jsonify(quiz)
+    # If you want dynamic quiz generation from Ollama:
+    # raw = generate_quiz()
+    # parsed = parse_quiz_response(raw)
+    # return jsonify(parsed)
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-    
+    app.run(debug=True, host="0.0.0.0", port=8000)
