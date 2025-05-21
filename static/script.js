@@ -28,6 +28,9 @@ const resultButtons = document.querySelector(".result-buttons");
 const newQuizButton = document.getElementById("new-quiz-button");
 const restartQuizButton = document.getElementById("restart-quiz-button");
 
+// Hide question counter initially
+questionCounter.style.display = 'none';
+
 // Topic selection
 topicButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -72,6 +75,13 @@ startButton.addEventListener('click', () => {
     // Hide setup and show quiz
     quizSetup.style.display = 'none';
     quizSection.style.display = 'block';
+    questionCounter.style.display = 'block';
+    
+    // Reset quiz state for new quiz
+    current = 0;
+    score = 0;
+    questions = [];
+    canProceed = false;
     
     // Start the quiz
     loadNextQuestion();
@@ -119,7 +129,12 @@ function showQuestion(index) {
 
     const q = questions[index];
     questionText.textContent = q.question;
+    
+    // Clear and reset options container
     optionsContainer.innerHTML = "";
+    optionsContainer.style.display = "flex";
+    optionsContainer.style.flexDirection = "column";
+    optionsContainer.style.gap = "12px";
 
     q.options.forEach((opt, i) => {
         const div = document.createElement("div");
@@ -186,9 +201,32 @@ newQuizButton.addEventListener('click', () => {
     questions = [];
     canProceed = false;
     
+    // Reset setup state
+    selectedTopic = null;
+    questionCount = 5;
+    selectedDifficulty = null;
+    
+    // Reset UI elements
+    topicButtons.forEach(btn => btn.classList.remove('selected'));
+    questionCountSlider.value = 5;
+    questionCountValue.textContent = '5';
+    difficultyButtons.forEach(btn => btn.classList.remove('selected'));
+    startButton.disabled = true;
+    
+    // Reset quiz section
+    questionText.style.display = "block";
+    optionsContainer.style.display = "none";
+    scoreContainer.style.display = "none";
+    nextButton.classList.remove('visible');
+    resultButtons.classList.remove('visible');
+    
+    // Clear any existing options
+    optionsContainer.innerHTML = "";
+    
     // Show setup and hide quiz
     quizSection.style.display = 'none';
     quizSetup.style.display = 'block';
+    questionCounter.style.display = 'none';
 });
 
 restartQuizButton.addEventListener('click', () => {
