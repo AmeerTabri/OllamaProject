@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 from quiz_generator import generate_quiz, parse_quiz_response
 
@@ -44,10 +44,14 @@ def get_quiz():
     global quiz_index
     quiz = quizzes[quiz_index]
     quiz_index = (quiz_index + 1) % len(quizzes)
-    return jsonify(quiz) 
-    raw = generate_quiz()
-    parsed = parse_quiz_response(raw)
-    return jsonify(parsed)
+    return jsonify(quiz)
+
+
+
+@app.get("/health")
+def health(): 
+    return {"status": "ok"}
+
 
  
 @app.get("/health")

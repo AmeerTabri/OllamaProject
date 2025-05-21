@@ -1,9 +1,24 @@
-const TOTAL_QUESTIONS = 5;
+// Quiz Setup Variables
+let selectedTopic = null;
+let questionCount = 5;
+let selectedDifficulty = null;
+
+// Quiz Variables
 let current = 0;
 let score = 0;
 let questions = [];
 let canProceed = false;
 
+// DOM Elements - Setup
+const quizSetup = document.getElementById('quiz-setup');
+const quizSection = document.getElementById('quiz-section');
+const topicButtons = document.querySelectorAll('.topic-btn');
+const questionCountSlider = document.getElementById('questionCount');
+const questionCountValue = document.getElementById('questionCountValue');
+const startButton = document.getElementById('startQuiz');
+const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+
+// DOM Elements - Quiz
 const questionText = document.getElementById("question-text");
 const optionsContainer = document.getElementById("options-container");
 const scoreContainer = document.getElementById("score-container");
@@ -13,6 +28,65 @@ const resultButtons = document.querySelector(".result-buttons");
 const newQuizButton = document.getElementById("new-quiz-button");
 const restartQuizButton = document.getElementById("restart-quiz-button");
 
+// Hide question counter initially
+questionCounter.style.display = 'none';
+
+// Topic selection
+topicButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        topicButtons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+        selectedTopic = button.dataset.topic;
+        updateStartButton();
+    });
+});
+
+// Question count slider
+questionCountSlider.addEventListener('input', () => {
+    questionCount = parseInt(questionCountSlider.value);
+    questionCountValue.textContent = questionCount;
+    updateStartButton();
+});
+
+// Difficulty selection
+difficultyButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        difficultyButtons.forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+        selectedDifficulty = button.dataset.difficulty;
+        updateStartButton();
+    });
+});
+
+function updateStartButton() {
+    startButton.disabled = !(selectedTopic && selectedDifficulty);
+}
+
+startButton.addEventListener('click', () => {
+    const quizConfig = {
+        topic: selectedTopic,
+        count: questionCount,
+        difficulty: selectedDifficulty
+    };
+    
+    // Store the configuration in localStorage
+    localStorage.setItem('quizConfig', JSON.stringify(quizConfig));
+    
+    // Hide setup and show quiz
+    quizSetup.style.display = 'none';
+    quizSection.style.display = 'block';
+    questionCounter.style.display = 'block';
+    
+    // Reset quiz state for new quiz
+    current = 0;
+    score = 0;
+    questions = [];
+    canProceed = false;
+    
+    // Start the quiz
+    loadNextQuestion();
+});
+
 async function fetchQuestion() {
     try {
         const response = await fetch('http://localhost:8000/quiz');
@@ -20,7 +94,7 @@ async function fetchQuestion() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const quiz = await response.json();
-        console.log('Received quiz:', quiz); // Debug log
+        console.log('Received quiz:', quiz);
         return quiz;
     } catch (error) {
         console.error('Error fetching question:', error);
@@ -46,16 +120,21 @@ function showQuestion(index) {
 
     // Reset state
     canProceed = false;
-    nextButton.style.display = 'none';
-    resultButtons.style.display = 'none';
-    nextButton.textContent = 'Next'; // Reset button text
+    nextButton.classList.remove('visible');
+    resultButtons.classList.remove('visible');
+    nextButton.textContent = 'Next';
 
     // Update question counter
-    questionCounter.textContent = `Question ${index + 1}/${TOTAL_QUESTIONS}`;
+    questionCounter.textContent = `Question ${index + 1}/${questionCount}`;
 
     const q = questions[index];
     questionText.textContent = q.question;
+    
+    // Clear and reset options container
     optionsContainer.innerHTML = "";
+    optionsContainer.style.display = "flex";
+    optionsContainer.style.flexDirection = "column";
+    optionsContainer.style.gap = "12px";
 
     q.options.forEach((opt, i) => {
         const div = document.createElement("div");
@@ -67,14 +146,13 @@ function showQuestion(index) {
 }
 
 function checkAnswer(element, isCorrect) {
-    if (canProceed) return; // Prevent multiple selections
+    if (canProceed) return;
 
     const options = document.querySelectorAll('.option');
     options.forEach(opt => opt.onclick = null);
 
     element.classList.add(isCorrect ? 'correct' : 'incorrect');
     
-    // If answer is incorrect, show the correct one
     if (!isCorrect) {
         options[questions[current].answer].classList.add('show-correct');
     }
@@ -83,13 +161,12 @@ function checkAnswer(element, isCorrect) {
 
     canProceed = true;
 
-    // Show appropriate button based on question number
-    if (current === TOTAL_QUESTIONS - 1) {
+    if (current === questionCount - 1) {
         nextButton.textContent = 'Finish';
-        nextButton.style.display = 'block';
+        nextButton.classList.add('visible');
     } else {
         nextButton.textContent = 'Next';
-        nextButton.style.display = 'block';
+        nextButton.classList.add('visible');
     }
 }
 
@@ -97,34 +174,68 @@ function showResults() {
     questionText.style.display = "none";
     optionsContainer.style.display = "none";
     questionCounter.style.display = "none";
-    nextButton.style.display = "none";
+    nextButton.classList.remove('visible');
     scoreContainer.style.display = "block";
-    resultButtons.style.display = "flex";
-    scoreContainer.textContent = `Your Score: ${score} / ${TOTAL_QUESTIONS}`;
+    resultButtons.classList.add('visible');
+    scoreContainer.textContent = `Your Score: ${score} / ${questionCount}`;
 }
 
 nextButton.addEventListener('click', async () => {
     if (!canProceed) return;
     
-    // If it's the last question and button says "Finish", show results
-    if (current === TOTAL_QUESTIONS - 1 && nextButton.textContent === 'Finish') {
+    if (current === questionCount - 1 && nextButton.textContent === 'Finish') {
         showResults();
         return;
     }
     
     current++;
-    if (current < TOTAL_QUESTIONS) {
+    if (current < questionCount) {
         await loadNextQuestion();
     }
 });
 
 newQuizButton.addEventListener('click', () => {
-    console.log('New Quiz button clicked');
+    // Reset quiz state
+    current = 0;
+    score = 0;
+    questions = [];
+    canProceed = false;
+    
+    // Reset setup state
+    selectedTopic = null;
+    questionCount = 5;
+    selectedDifficulty = null;
+    
+    // Reset UI elements
+    topicButtons.forEach(btn => btn.classList.remove('selected'));
+    questionCountSlider.value = 5;
+    questionCountValue.textContent = '5';
+    difficultyButtons.forEach(btn => btn.classList.remove('selected'));
+    startButton.disabled = true;
+    
+    // Reset quiz section
+    questionText.style.display = "block";
+    optionsContainer.style.display = "none";
+    scoreContainer.style.display = "none";
+    nextButton.classList.remove('visible');
+    resultButtons.classList.remove('visible');
+    
+    // Clear any existing options
+    optionsContainer.innerHTML = "";
+    
+    // Show setup and hide quiz
+    quizSection.style.display = 'none';
+    quizSetup.style.display = 'block';
+    questionCounter.style.display = 'none';
 });
 
 restartQuizButton.addEventListener('click', () => {
-    console.log('Restart Quiz button clicked');
+    // Reset quiz state
+    current = 0;
+    score = 0;
+    questions = [];
+    canProceed = false;
+    
+    // Start new quiz with same config
+    loadNextQuestion();
 });
-
-// Start quiz
-loadNextQuestion();
