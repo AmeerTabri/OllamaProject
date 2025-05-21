@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Setup</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="quiz-setup-box">
+    <h1>Start Your Quiz</h1>
+    
+    <div class="setup-section">
+      <h2>Select Topic</h2>
+      <div class="topic-options">
+        <button class="topic-btn" data-topic="history">History</button>
+        <button class="topic-btn" data-topic="geography">Geography</button>
+        <button class="topic-btn" data-topic="physics">Physics</button>
+        <button class="topic-btn" data-topic="computer-science">Computer Science</button>
+        <button class="topic-btn" data-topic="football">Football</button>
+        <button class="topic-btn" data-topic="capitals">Country Capitals</button>
+        <button class="topic-btn" data-topic="space">Astronomy</button>
+        <button class="topic-btn" data-topic="animals">Animals & Nature</button>
+      </div>
+    </div>
+
+    <div class="setup-section">
+      <h2>Number of Questions</h2>
+      <div class="question-count">
+        <input type="range" id="questionCount" min="3" max="10" value="5">
+        <span id="questionCountValue">5</span> Questions
+      </div>
+    </div>
+
+    <div class="setup-section">
+      <h2>Difficulty Level</h2>
+      <div class="difficulty-options">
+        <button class="difficulty-btn" data-difficulty="easy">
+          <span class="difficulty-icon">⭐</span>
+          <span class="difficulty-text">Easy</span>
+        </button>
+        <button class="difficulty-btn" data-difficulty="medium">
+          <span class="difficulty-icon">⭐⭐</span>
+          <span class="difficulty-text">Medium</span>
+        </button>
+        <button class="difficulty-btn" data-difficulty="hard">
+          <span class="difficulty-icon">⭐⭐⭐</span>
+          <span class="difficulty-text">Hard</span>
+        </button>
+      </div>
+    </div>
+
+    <button id="startQuiz" class="start-button" disabled>Start Quiz</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html> 
