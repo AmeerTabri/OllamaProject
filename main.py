@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from quiz_generator import generate_quiz
+from quiz_generator import generate_quiz, parse_quiz_response
 
 app = FastAPI()
 
@@ -21,15 +21,25 @@ quizzes = [
         "answer": 1
     },
     {
-        "question": "Which planet is known as the Red Planet?",
+        "question": "Which planet in our solar system has the most moons?",
         "options": ["Venus", "Mars", "Jupiter", "Saturn"],
-        "answer": 1
+        "answer": 3
+    },
+    {
+        "question": "Who is the Goat of Football?",
+        "options": ["Lionel Messi", "Cristiano Ronaldo", "Maradona", "Antony"],
+        "answer": 3
     },
     {
         "question": "What is the largest mammal in the world?",
         "options": ["African Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
         "answer": 1
-    }
+    },
+    {
+        "question": "What is the chemical symbol for Silver?",
+        "options": ["Ag", "Au", "Cu", "Fe"],
+        "answer": 0
+    } 
 ]
 
 
@@ -39,6 +49,9 @@ async def get_quiz():
     quiz = quizzes[quiz_index]
     quiz_index = (quiz_index + 1) % len(quizzes)
     return quiz
+    raw = generate_quiz() 
+    parsed = parse_quiz_response(raw)
+    return parsed
 
 
 # @app.get("/quiz")
