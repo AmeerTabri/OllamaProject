@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=/home/ubuntu/OllamaProject
-ExecStart=/bin/bash -c 'cd /home/ubuntu/OllamaProject && source .venv/bin/activate && python -m main'
+ExecStart=/home/ubuntu/OllamaProject/.venv/bin/python -m main
 Restart=always
 
 [Install]
