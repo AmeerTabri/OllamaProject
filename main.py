@@ -38,6 +38,7 @@ quizzes = [
 def index():
     return render_template("index.html")
 
+
 @app.route("/quiz")
 def get_quiz():
     global quiz_index
@@ -47,6 +48,15 @@ def get_quiz():
     raw = generate_quiz()
     parsed = parse_quiz_response(raw)
     return jsonify(parsed)
+
+ 
+@app.get("/health")
+def health():
+    """
+    Health check endpoint
+    """
+    return {"status": "ok"}
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)
