@@ -42,7 +42,6 @@ quizzes = [
     } 
 ]
 
-
 @app.get("/quiz")
 async def get_quiz():
     global quiz_index
