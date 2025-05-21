@@ -1,5 +1,3 @@
-#!/bin/bash
-
 cd ~/OllamaProject
 
 # Step 1: Create virtual environment if it doesn't exist
