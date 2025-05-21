@@ -6,16 +6,22 @@ def generate_quiz(topic="geography"):
     messages = [
         {
             "role": "system",
-            "content": f'Generate a multiple-choice question in {topic}. '
-                    'Format your response in this exact format: '
-                    'question | optionA | optionB | optionC | optionD | the index of the correct option (0-based)'
-                    'Example: What is the capital of France? | London | Paris | Berlin | Madrid | 1'
+            "content": f"""
+                You are a quiz question generator in the topic of {topic}.
+                Generate ONE multiple-choice question. 
+                Respond in this exact format:
+                Question text | Option A | Option B | Option C | Option D | Correct Option Index (0-3) 
+                Example:
+                What is the capital of France? | London | Paris | Berlin | Madrid | 1 
+                Only return the formatted line — no explanations, no extra text.
+            """
         },
-        {"role": "user", "content": "Generate one question."}
+        {"role": "user", "content": "Generate a question."} 
     ] 
 
     try:
         response = chat(model="gemma3:1b", messages=messages)
+        print("raw response: \n", response)
         return response['message']['content']
     except Exception as e:
         print("Error fetching Ollama response:", e)
