@@ -1,6 +1,6 @@
 // Quiz Setup Variables
 let selectedTopic = null;
-let questionCount = 5;
+let questionCount = 0;
 let selectedDifficulty = null;
 
 // Quiz State Variables
