@@ -24,7 +24,7 @@ fi
 echo "Starting Ollama service..."
 sudo systemctl start ollama
 sleep 2
-ollama pull gemma3:1b
+ollama pull gemma3:4b-it-qat
 
 # Step 5: Copy your app's systemd service file
 sudo cp ollama_app.service /etc/systemd/system/
