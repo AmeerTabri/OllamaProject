@@ -209,27 +209,17 @@ h2 {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  display: block;
+  display: none;
   margin: 20px auto;
   min-width: 120px;
-  visibility: hidden;
-}
-
-.next-button.visible {
-  visibility: visible;
 }
 
 .result-buttons {
-  display: flex;
+  display: none;
   gap: 20px;
   margin: 20px auto;
   justify-content: center;
   width: 100%;
-  visibility: hidden;
-}
-
-.result-buttons.visible {
-  visibility: visible;
 }
 
 .result-button {
@@ -248,4 +238,4 @@ h2 {
 .result-button:hover {
   background: #007bff;
   color: white;
-} 
+}
