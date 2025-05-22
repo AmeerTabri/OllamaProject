@@ -3,6 +3,8 @@ cd ~/OllamaProject
 # Step 1: Create virtual environment if it doesn't exist
 if [ ! -d ".venv" ]; then
   echo "Creating virtual environment..."
+  sudo apt update
+  sudo apt install python3.12-venv -y
   python3 -m venv .venv
 fi
 
