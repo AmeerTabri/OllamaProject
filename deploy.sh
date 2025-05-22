@@ -9,10 +9,7 @@ fi
 # Step 2: Activate venv and install dependencies
 source .venv/bin/activate
 pip install --upgrade pip
-
-if [ -f requirements.txt ]; then
-  pip install -r requirements.txt
-fi
+pip install -r requirements.txt
 
 # Step 3: Install Ollama if not installed
 if ! command -v ollama &> /dev/null; then
