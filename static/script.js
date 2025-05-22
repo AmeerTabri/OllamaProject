@@ -86,6 +86,7 @@ startButton.addEventListener('click', () => {
     loadNextQuestion();
 });
 
+
 // Fetch Question from Backend
 async function fetchQuestion() {
     try {
