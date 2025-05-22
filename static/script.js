@@ -3,11 +3,12 @@ let selectedTopic = null;
 let questionCount = 5;
 let selectedDifficulty = null;
 
-// Quiz Variables
+// Quiz State Variables
 let current = 0;
 let score = 0;
 let questions = [];
 let canProceed = false;
+let savedQuiz = [];  // Stores the last quiz set for restart
 
 // DOM Elements - Setup
 const quizSetup = document.getElementById('quiz-setup');
@@ -22,6 +23,7 @@ const difficultyButtons = document.querySelectorAll('.difficulty-btn');
 const questionText = document.getElementById("question-text");
 const optionsContainer = document.getElementById("options-container");
 const scoreContainer = document.getElementById("score-container");
+const feedbackContainer = document.getElementById("feedback");
 const questionCounter = document.getElementById("question-counter");
 const nextButton = document.getElementById("next-button");
 const resultButtons = document.querySelector(".result-buttons");
@@ -62,38 +64,34 @@ function updateStartButton() {
     startButton.disabled = !(selectedTopic && selectedDifficulty);
 }
 
+// Start Quiz
 startButton.addEventListener('click', () => {
     const quizConfig = {
         topic: selectedTopic,
         count: questionCount,
         difficulty: selectedDifficulty
     };
-    
-    // Store the configuration in localStorage
+
     localStorage.setItem('quizConfig', JSON.stringify(quizConfig));
-    
-    // Hide setup and show quiz
+
     quizSetup.style.display = 'none';
     quizSection.style.display = 'block';
     questionCounter.style.display = 'block';
-    
-    // Reset quiz state for new quiz
+
     current = 0;
     score = 0;
     questions = [];
     canProceed = false;
-    
-    // Start the quiz
+
     loadNextQuestion();
 });
 
+// Fetch Question from Backend
 async function fetchQuestion() {
     try {
         const response = await fetch('http://localhost:8000/quiz', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 topic: selectedTopic,
                 count: questionCount,
@@ -106,7 +104,6 @@ async function fetchQuestion() {
         }
 
         const quiz = await response.json();
-        console.log('Received quiz:', quiz);
         return quiz;
     } catch (error) {
         console.error('Error fetching question:', error);
@@ -115,35 +112,35 @@ async function fetchQuestion() {
     }
 }
 
-
+// Load the next question
 async function loadNextQuestion() {
-    const quiz = await fetchQuestion();
-    if (quiz) {
+    if (savedQuiz.length < questionCount) {
+        const quiz = await fetchQuestion();
+        if (quiz) {
+            savedQuiz.push(quiz);
+            questions.push(quiz);
+            showQuestion(current);
+        }
+    } else {
+        const quiz = savedQuiz[current];
         questions.push(quiz);
         showQuestion(current);
-    } else {
-        questionText.textContent = "Error loading question. Please try again.";
     }
 }
 
+// Display question
 function showQuestion(index) {
-    if (index >= questions.length) {
-        return;
-    }
+    if (index >= questions.length) return;
 
-    // Reset state
     canProceed = false;
     nextButton.classList.remove('visible');
     resultButtons.classList.remove('visible');
     nextButton.textContent = 'Next';
 
-    // Update question counter
     questionCounter.textContent = `Question ${index + 1}/${questionCount}`;
 
     const q = questions[index];
     questionText.textContent = q.question;
-    
-    // Clear and reset options container
     optionsContainer.innerHTML = "";
     optionsContainer.style.display = "flex";
     optionsContainer.style.flexDirection = "column";
@@ -158,6 +155,7 @@ function showQuestion(index) {
     });
 }
 
+// Handle answer selection
 function checkAnswer(element, isCorrect) {
     if (canProceed) return;
 
@@ -165,24 +163,29 @@ function checkAnswer(element, isCorrect) {
     options.forEach(opt => opt.onclick = null);
 
     element.classList.add(isCorrect ? 'correct' : 'incorrect');
-    
+
     if (!isCorrect) {
         options[questions[current].answer].classList.add('show-correct');
     }
-    
+
     if (isCorrect) score++;
 
     canProceed = true;
-
-    if (current === questionCount - 1) {
-        nextButton.textContent = 'Finish';
-        nextButton.classList.add('visible');
-    } else {
-        nextButton.textContent = 'Next';
-        nextButton.classList.add('visible');
-    }
+    nextButton.textContent = (current === questionCount - 1) ? 'Finish' : 'Next';
+    nextButton.classList.add('visible');
 }
 
+// Get result feedback message
+function getFeedback(score, total) {
+    const percentage = (score / total) * 100;
+    if (percentage <= 40) return "You're trash 😬";
+    if (percentage <= 60) return "meh";
+    if (percentage <= 70) return "Not bad 👍";
+    if (percentage <= 90) return "Excellent! 🔥";
+    return "Perfect score! You're a QuizMaster 🏆";
+}
+
+// Display final score and feedback
 function showResults() {
     questionText.style.display = "none";
     optionsContainer.style.display = "none";
@@ -190,65 +193,74 @@ function showResults() {
     nextButton.classList.remove('visible');
     scoreContainer.style.display = "block";
     resultButtons.classList.add('visible');
+
     scoreContainer.textContent = `Your Score: ${score} / ${questionCount}`;
+    feedbackContainer.textContent = getFeedback(score, questionCount);
+    feedbackContainer.style.display = "block";
 }
 
+// Next button logic
 nextButton.addEventListener('click', async () => {
     if (!canProceed) return;
-    
+
     if (current === questionCount - 1 && nextButton.textContent === 'Finish') {
         showResults();
         return;
     }
-    
+
     current++;
     if (current < questionCount) {
         await loadNextQuestion();
     }
 });
 
-newQuizButton.addEventListener('click', () => {
-    // Reset quiz state
+// Restart Quiz
+restartQuizButton.addEventListener('click', async () => {
     current = 0;
     score = 0;
     questions = [];
     canProceed = false;
-    
-    // Reset setup state
+
+    questionText.style.display = "block";
+    optionsContainer.style.display = "flex";
+    scoreContainer.style.display = "none";
+    feedbackContainer.style.display = "none";
+    feedbackContainer.textContent = "";
+    nextButton.classList.remove('visible');
+    resultButtons.classList.remove('visible');
+    questionCounter.style.display = 'block';
+
+    await loadNextQuestion();
+});
+
+// Start a brand new quiz
+newQuizButton.addEventListener('click', () => {
+    savedQuiz = [];
+    current = 0;
+    score = 0;
+    questions = [];
+    canProceed = false;
+
     selectedTopic = null;
     questionCount = 5;
     selectedDifficulty = null;
-    
-    // Reset UI elements
+
     topicButtons.forEach(btn => btn.classList.remove('selected'));
     questionCountSlider.value = 5;
     questionCountValue.textContent = '5';
     difficultyButtons.forEach(btn => btn.classList.remove('selected'));
     startButton.disabled = true;
-    
-    // Reset quiz section
+
     questionText.style.display = "block";
     optionsContainer.style.display = "none";
     scoreContainer.style.display = "none";
+    feedbackContainer.style.display = "none";
+    feedbackContainer.textContent = "";
     nextButton.classList.remove('visible');
     resultButtons.classList.remove('visible');
-    
-    // Clear any existing options
     optionsContainer.innerHTML = "";
-    
-    // Show setup and hide quiz
+
     quizSection.style.display = 'none';
     quizSetup.style.display = 'block';
     questionCounter.style.display = 'none';
-});
-
-restartQuizButton.addEventListener('click', () => {
-    // Reset quiz state
-    current = 0;
-    score = 0;
-    questions = [];
-    canProceed = false;
-    
-    // Start new quiz with same config
-    loadNextQuestion();
 });

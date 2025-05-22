@@ -49,7 +49,7 @@ def get_quiz():
     global quiz_index
     quiz = quizzes[quiz_index]
     quiz_index = (quiz_index + 1) % len(quizzes) 
-    # return jsonify(quiz)
+    return jsonify(quiz)
 
     raw = generate_quiz(topic=topic)
     parsed = parse_quiz_response(raw)
