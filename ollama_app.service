@@ -1,11 +1,15 @@
 [Unit]
-Description=Ollama Server
+Description=Ollama App Service
 After=network.target
 
 [Service]
 WorkingDirectory=/home/ubuntu/OllamaProject
 ExecStart=/home/ubuntu/OllamaProject/.venv/bin/python3 -m main
-Restart=always
+Restart=on-failure
+Environment="PYTHONUNBUFFERED=1"
+StandardOutput=journal
+StandardError=journal
+User=ubuntu
 
 [Install]
 WantedBy=multi-user.target
