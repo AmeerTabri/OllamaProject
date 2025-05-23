@@ -175,8 +175,18 @@ body::before {
   font-size: 1rem;
 }
 
-.difficulty-btn:hover {
-  border-color: var(--primary);
+.difficulty-btn[data-difficulty="easy"]:hover {
+  border-color: var(--success);
+  background: var(--hover);
+}
+
+.difficulty-btn[data-difficulty="medium"]:hover {
+  border-color: var(--warning);
+  background: var(--hover);
+}
+
+.difficulty-btn[data-difficulty="hard"]:hover {
+  border-color: var(--error);
   background: var(--hover);
 }
 
