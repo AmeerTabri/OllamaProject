@@ -312,16 +312,34 @@ body::before {
   color: var(--success);
 }
 
+.correct:hover {
+  background: rgba(30, 201, 144, 0.3);
+  color: var(--success);
+  transform: translateX(8px);
+}
+
 .incorrect {
   border-color: var(--error);
   background: rgba(212, 61, 61, 0.2);
   color: var(--error);
 }
 
+.incorrect:hover {
+  background: rgba(212, 61, 61, 0.3);
+  color: var(--error);
+  transform: translateX(8px);
+}
+
 .show-correct {
   border-color: var(--success);
   background: var(--hover);
   color: var(--text);
+}
+
+.show-correct:hover {
+  background: var(--primary);
+  color: var(--bg);
+  transform: translateX(8px);
 }
 
 .score {
