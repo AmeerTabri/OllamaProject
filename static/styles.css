@@ -4,7 +4,7 @@
 :root {
   --primary: #43a9d1;
   --primary-dark: #50c0e2;
-  --success: #1ec58d;
+  --success: #1ec569;
   --error: #cf5555;
   --warning: #f59e0b;
   --bg: #1e293b;
@@ -215,6 +215,13 @@ body::before {
   transition: all 0.2s ease;
 }
 
+.next-button-wrapper {
+  height: 70px; /* Match or slightly more than button height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .start-button:hover:not(:disabled) {
   background: var(--primary-dark);
   transform: translateY(-1px);
@@ -403,4 +410,19 @@ body::before {
   background: var(--primary);
   border-radius: 2px;
   transition: width 0.3s ease;
+}
+
+.loading-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--text-light);
+  padding: 2rem;
+  display: none;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
 }
