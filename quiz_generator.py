@@ -1,3 +1,4 @@
+import subprocess
 from ollama import chat
 import json
 

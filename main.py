@@ -41,15 +41,17 @@ def index():
 
 @app.route("/quiz", methods=["POST"])
 def get_quiz():
-    # data = request.get_json()
-    # topic = data.get("topic")
-    # difficulty = data.get("difficulty")
-    # count = int(data.get("count", 5))
+    # raw = jsonify.loads(quizzes)
+
+    data = request.get_json()
+    topic = data.get("topic")
+    difficulty = data.get("difficulty")
+    count = int(data.get("count", 5))
  
-    # global quiz_index
-    # quiz = quizzes[quiz_index]
-    # quiz_index = (quiz_index + 1) % len(quizzes) 
-    # return jsonify(quiz)
+    global quiz_index
+    quiz = quizzes[quiz_index]
+    quiz_index = (quiz_index + 1) % len(quizzes) 
+    return jsonify(quiz)
 
     raw = generate_quiz(topic="soccer")
     parsed = parse_quiz_response(raw)
