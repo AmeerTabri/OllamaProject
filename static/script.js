@@ -6,7 +6,6 @@ let selectedDifficulty = null;
 // Quiz State Variables
 let current = 0;
 let score = 0;
-let questions = [];
 let canProceed = false;
 let savedQuiz = [];
 
@@ -60,7 +59,7 @@ function updateStartButton() {
   startButton.disabled = !(selectedTopic && selectedDifficulty);
 }
 
-startButton.addEventListener('click', () => {
+startButton.addEventListener('click', async () => {
   localStorage.setItem('quizConfig', JSON.stringify({
     topic: selectedTopic,
     count: questionCount,
@@ -69,17 +68,23 @@ startButton.addEventListener('click', () => {
 
   quizSetup.style.display = 'none';
   quizSection.style.display = 'block';
-  questionCounter.style.display = 'block';
+  loadingMessage.style.display = "block";
   questionText.style.display = "none";
   optionsContainer.style.display = "none";
-  loadingMessage.style.display = "block";
 
   current = 0;
   score = 0;
-  questions = [];
-  savedQuiz = [];
   canProceed = false;
+  savedQuiz = [];
 
+  for (let i = 0; i < questionCount; i++) {
+    const quiz = await fetchQuestion();
+    if (quiz) {
+      savedQuiz.push(quiz);
+    }
+  }
+
+  questionCounter.style.display = 'block';
   loadNextQuestion();
 });
 
@@ -90,7 +95,7 @@ async function fetchQuestion() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         topic: selectedTopic,
-        count: questionCount,
+        count: 1,
         difficulty: selectedDifficulty
       }),
     });
@@ -103,22 +108,17 @@ async function fetchQuestion() {
   }
 }
 
-async function loadNextQuestion() {
-  nextButton.style.display = "none"; 
+function loadNextQuestion() {
+  nextButton.style.display = "none";
   loadingMessage.style.display = "block";
   questionText.style.display = "none";
   optionsContainer.style.display = "none";
 
-  if (savedQuiz.length <= current) {
-    const quiz = await fetchQuestion();
-    if (quiz) {
-      savedQuiz.push(quiz);
-    }
-  }
-
   const quiz = savedQuiz[current];
   if (quiz) {
     showQuestion(quiz);
+  } else {
+    loadingMessage.textContent = "No more questions.";
   }
 }
 
@@ -134,9 +134,9 @@ function showQuestion(q) {
   nextButton.textContent = (current === questionCount - 1) ? 'Finish' : 'Next';
   questionCounter.textContent = `Question ${current + 1}/${questionCount}`;
 
+  questionText.textContent = q.question;
   optionsContainer.style.flexDirection = "column";
   optionsContainer.style.gap = "12px";
-  questionText.textContent = q.question;
 
   q.options.forEach((opt, i) => {
     const div = document.createElement("div");
@@ -185,20 +185,19 @@ function showResults() {
   feedbackContainer.style.display = "block";
 }
 
-nextButton.addEventListener('click', async () => {
+nextButton.addEventListener('click', () => {
   if (!canProceed) return;
   if (current === questionCount - 1 && nextButton.textContent === 'Finish') {
     showResults();
     return;
   }
   current++;
-  if (current < questionCount) await loadNextQuestion();
+  if (current < questionCount) loadNextQuestion();
 });
 
-restartQuizButton.addEventListener('click', async () => {
+restartQuizButton.addEventListener('click', () => {
   current = 0;
   score = 0;
-  questions = [];
   canProceed = false;
 
   questionText.style.display = "block";
@@ -210,7 +209,7 @@ restartQuizButton.addEventListener('click', async () => {
   resultButtons.style.display = 'none';
   questionCounter.style.display = 'block';
 
-  await loadNextQuestion();
+  loadNextQuestion();
 });
 
 newQuizButton.addEventListener('click', () => {
@@ -219,9 +218,8 @@ newQuizButton.addEventListener('click', () => {
   questionCount = 5;
   current = 0;
   score = 0;
-  questions = [];
-  savedQuiz = [];
   canProceed = false;
+  savedQuiz = [];
 
   topicButtons.forEach(btn => btn.classList.remove('selected'));
   difficultyButtons.forEach(btn => btn.classList.remove('selected'));
