@@ -4,20 +4,20 @@
 :root {
   --primary: #43a9d1;
   --primary-dark: #50c0e2;
-  --success: #10b981;
-  --error: #ef4444;
+  --success: #1ec58d;
+  --error: #cf5555;
   --warning: #f59e0b;
   --bg: #1e293b;
   --card: #334155;
   --text: #f8fafc;
   --text-light: #cbd5e1;
-  --border: #465161;
-  --hover: #475569;
+  --border: #586477;
+  --hover: #5d708a;
 }
 
 body {
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  background: linear-gradient(135deg, #3c4186 0%, #466d88 100%);
   color: var(--text);
   display: flex;
   flex-direction: column;
@@ -51,7 +51,7 @@ body::before {
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2);
   max-width: 600px;
-  width: 90%;
+  width: 100%;
   margin: 1rem auto;
   border: 2px solid var(--border);
   transition: transform 0.2s ease;
@@ -74,7 +74,7 @@ body::before {
 }
 
 .setup-section h2 {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 1rem;
@@ -99,6 +99,7 @@ body::before {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  font-size: 1rem;
 }
 
 .topic-btn:hover {
@@ -113,7 +114,7 @@ body::before {
 }
 
 .topic-icon {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
 }
 
 .question-count {
@@ -171,6 +172,7 @@ body::before {
   gap: 0.25rem;
   transition: all 0.2s ease;
   color: var(--text);
+  font-size: 1rem;
 }
 
 .difficulty-btn:hover {
@@ -194,6 +196,10 @@ body::before {
   background: var(--error);
   border-color: var(--error);
   color: var(--bg);
+}
+
+.difficulty-icon {
+  font-size: 1.2rem;
 }
 
 .start-button {
@@ -228,7 +234,7 @@ body::before {
   background: var(--card);
   padding: 0.5rem 1rem;
   border-radius: 1rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--text);
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
@@ -251,7 +257,7 @@ body::before {
 }
 
 .quiz-box h2 {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 1.5rem;
@@ -285,13 +291,13 @@ body::before {
 
 .correct {
   border-color: var(--success);
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(30, 201, 144, 0.2);
   color: var(--success);
 }
 
 .incorrect {
   border-color: var(--error);
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(212, 61, 61, 0.2);
   color: var(--error);
 }
 
