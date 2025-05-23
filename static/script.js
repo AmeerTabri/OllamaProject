@@ -27,6 +27,7 @@ const nextButton = document.getElementById("next-button");
 const resultButtons = document.querySelector(".result-buttons");
 const newQuizButton = document.getElementById("new-quiz-button");
 const restartQuizButton = document.getElementById("restart-quiz-button");
+const loadingMessage = document.getElementById("loading-message");
 
 questionCounter.style.display = 'none';
 
@@ -69,6 +70,9 @@ startButton.addEventListener('click', () => {
   quizSetup.style.display = 'none';
   quizSection.style.display = 'block';
   questionCounter.style.display = 'block';
+  questionText.style.display = "none";
+  optionsContainer.style.display = "none";
+  loadingMessage.style.display = "block";
 
   current = 0;
   score = 0;
@@ -94,12 +98,16 @@ async function fetchQuestion() {
     return await response.json();
   } catch (error) {
     console.error('Error fetching question:', error);
-    questionText.textContent = "Error loading question.";
+    loadingMessage.textContent = "Error loading question.";
     return null;
   }
 }
 
 async function loadNextQuestion() {
+  loadingMessage.style.display = "block";
+  questionText.style.display = "none";
+  optionsContainer.style.display = "none";
+
   if (savedQuiz.length <= current) {
     const quiz = await fetchQuestion();
     if (quiz) {
@@ -114,17 +122,20 @@ async function loadNextQuestion() {
 }
 
 function showQuestion(q) {
+  loadingMessage.style.display = "none";
+  questionText.style.display = "block";
+  optionsContainer.style.display = "flex";
+  optionsContainer.innerHTML = "";
+
   canProceed = false;
   nextButton.style.display = 'none';
   resultButtons.style.display = 'none';
   nextButton.textContent = (current === questionCount - 1) ? 'Finish' : 'Next';
   questionCounter.textContent = `Question ${current + 1}/${questionCount}`;
 
-  questionText.textContent = q.question;
-  optionsContainer.innerHTML = "";
-  optionsContainer.style.display = "flex";
   optionsContainer.style.flexDirection = "column";
   optionsContainer.style.gap = "12px";
+  questionText.textContent = q.question;
 
   q.options.forEach((opt, i) => {
     const div = document.createElement("div");
