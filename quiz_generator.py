@@ -2,6 +2,17 @@ import subprocess
 from ollama import chat
 import json
 
+topic_descriptions = {
+    "history": "Generate questions about important historical events, famous leaders, ancient civilizations, and world-changing moments.",
+    "geography": "Generate questions about countries, continents, landmarks, world maps, and physical geography such as rivers and mountains.",
+    "physics": "Generate conceptual and factual questions related to physics topics such as motion, forces, energy, electricity, and famous physicists.",
+    "computer-science": "Generate questions related to programming, algorithms, data structures, computer architecture, and basic theory.",
+    "soccer": "Generate football-related questions about players, teams, World Cups, leagues, and game rules.",
+    "capitals": "Generate questions that ask for the capital cities of countries from all around the world.",
+    "Astronomy": "Generate questions about planets, stars, galaxies, space exploration, and basic astrophysics.",
+    "fashion": "Generate questions about clothing styles, fashion history, designers, trends, and global fashion capitals."
+}
+
 
 def generate_quiz(topic="geography", count=5):
     messages = [
@@ -9,16 +20,19 @@ def generate_quiz(topic="geography", count=5):
             "role": "system",
             "content": f"""
                 You are a quiz question generator in the topic of {topic}.
-                Generate {count} multiple-choice question. 
-                Each question should be in this exact format:
-                Question text | Option A | Option B | Option C | Option D | Correct Option Index (0-3) 
+                Generate {count} multiple-choice questions.
+                Each question should be on a **new line** in the following format:
+                Question text | Option A | Option B | Option C | Option D | Correct Option Index (0-3)
+
                 Example:
-                What is the capital of France? | London | Paris | Berlin | Madrid | 1 
-                Only return the formatted line — no explanations, no extra text.
+                What is the capital of France? | London | Paris | Berlin | Madrid | 1
+
+                Only return {count} lines — no explanations, no numbering, no extra text.
             """
         },
-        {"role": "user", "content": "Generate a question."} 
-    ] 
+        {"role": "user", "content": f"Generate {count} questions."}
+    ]
+
 
     try:
         response = chat(model="gemma3:4b-it-qat", messages=messages)
@@ -72,8 +86,8 @@ def print_quiz(question):
 
 
 if __name__ == "__main__":
-    raw = generate_quiz(topic="soccer", count=2)
+    raw = generate_quiz(topic="soccer", count=5)
     print("raw: \n", raw)
-    parsed = parse_quiz_response(raw)
-    print("parsed: \n", parsed)
-    print_quiz(parsed)
+    # parsed = parse_quiz_response(raw)
+    # print("parsed: \n", parsed)
+    # print_quiz(parsed)
