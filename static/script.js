@@ -104,6 +104,7 @@ async function fetchQuestion() {
 }
 
 async function loadNextQuestion() {
+  nextButton.style.display = "none"; 
   loadingMessage.style.display = "block";
   questionText.style.display = "none";
   optionsContainer.style.display = "none";
