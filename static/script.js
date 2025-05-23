@@ -89,24 +89,28 @@ startButton.addEventListener('click', async () => {
 });
 
 async function fetchQuestion() {
-  try {
-    const response = await fetch('http://localhost:8000/quiz', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        topic: selectedTopic,
-        count: 1,
-        difficulty: selectedDifficulty
-      }),
-    });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching question:', error);
-    loadingMessage.textContent = "Error loading question.";
-    return null;
-  }
+    try {
+      const response = await fetch('http://localhost:8000/quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic: selectedTopic,
+          count: questionCount,
+          difficulty: selectedDifficulty
+        }),
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+  
+      const data = await response.json();
+      if (!Array.isArray(data)) throw new Error("Expected an array of quiz questions.");
+      return data;
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      loadingMessage.textContent = "Error loading questions.";
+      return [];
+    }
 }
+  
 
 function loadNextQuestion() {
   nextButton.style.display = "none";
@@ -195,22 +199,52 @@ nextButton.addEventListener('click', () => {
   if (current < questionCount) loadNextQuestion();
 });
 
-restartQuizButton.addEventListener('click', () => {
-  current = 0;
-  score = 0;
-  canProceed = false;
-
-  questionText.style.display = "block";
-  optionsContainer.style.display = "flex";
-  scoreContainer.style.display = "none";
-  feedbackContainer.style.display = "none";
-  feedbackContainer.textContent = "";
-  nextButton.style.display = 'none';
-  resultButtons.style.display = 'none';
-  questionCounter.style.display = 'block';
-
-  loadNextQuestion();
+startButton.addEventListener('click', async () => {
+    localStorage.setItem('quizConfig', JSON.stringify({
+      topic: selectedTopic,
+      count: questionCount,
+      difficulty: selectedDifficulty
+    }));
+  
+    quizSetup.style.display = 'none';
+    quizSection.style.display = 'block';
+    loadingMessage.style.display = "block";
+    questionText.style.display = "none";
+    optionsContainer.style.display = "none";
+  
+    current = 0;
+    score = 0;
+    canProceed = false;
+    savedQuiz = [];
+  
+    const quizzes = await fetchQuestion();
+    if (quizzes.length > 0) {
+      savedQuiz = quizzes;
+      questionCounter.style.display = 'block';
+      loadNextQuestion();
+    } else {
+      loadingMessage.textContent = "Failed to load quiz.";
+    }
 });
+
+
+restartQuizButton.addEventListener('click', () => {
+    current = 0;
+    score = 0;
+    canProceed = false;
+  
+    questionText.style.display = "block";
+    optionsContainer.style.display = "flex";
+    scoreContainer.style.display = "none";
+    feedbackContainer.style.display = "none";
+    feedbackContainer.textContent = "";
+    nextButton.style.display = 'none';
+    resultButtons.style.display = 'none';
+    questionCounter.style.display = 'block';
+  
+    loadNextQuestion(); // reuse savedQuiz
+}); 
+
 
 newQuizButton.addEventListener('click', () => {
   selectedTopic = null;
