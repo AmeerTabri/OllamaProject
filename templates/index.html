@@ -14,14 +14,38 @@
     <div class="setup-section">
       <h2>Select Topic</h2>
       <div class="topic-options">
-        <button class="topic-btn" data-topic="history">History</button>
-        <button class="topic-btn" data-topic="geography">Geography</button>
-        <button class="topic-btn" data-topic="physics">Physics</button>
-        <button class="topic-btn" data-topic="computer-science">Computer Science</button>
-        <button class="topic-btn" data-topic="soccer">Football</button>
-        <button class="topic-btn" data-topic="capitals">Country Capitals</button>
-        <button class="topic-btn" data-topic="space">Astronomy</button>
-        <button class="topic-btn" data-topic="animals">Animals & Nature</button>
+        <button class="topic-btn" data-topic="history">
+          <span class="topic-icon">🏛️</span>
+          <span class="topic-text">History</span>
+        </button>
+        <button class="topic-btn" data-topic="geography">
+          <span class="topic-icon">🌍</span>
+          <span class="topic-text">Geography</span>
+        </button>
+        <button class="topic-btn" data-topic="physics">
+          <span class="topic-icon">⚡</span>
+          <span class="topic-text">Physics</span>
+        </button>
+        <button class="topic-btn" data-topic="computer-science">
+          <span class="topic-icon">💻</span>
+          <span class="topic-text">Computer Science</span>
+        </button>
+        <button class="topic-btn" data-topic="soccer">
+          <span class="topic-icon">⚽</span>
+          <span class="topic-text">Football</span>
+        </button>
+        <button class="topic-btn" data-topic="capitals">
+          <span class="topic-icon">🏙️</span>
+          <span class="topic-text">Country Capitals</span>
+        </button>
+        <button class="topic-btn" data-topic="space">
+          <span class="topic-icon">🚀</span>
+          <span class="topic-text">Astronomy</span>
+        </button>
+        <button class="topic-btn" data-topic="animals">
+          <span class="topic-icon">🦁</span>
+          <span class="topic-text">Animals & Nature</span>
+        </button>
       </div>
     </div>
 
@@ -55,18 +79,31 @@
   </div>
 
   <!-- Quiz Section -->
-  <div id="question-counter" class="question-counter">Question 1/5</div>
   <div id="quiz-section" class="quiz-box" style="display: none;">
+    <div id="question-counter" class="question-counter">Question 1/5</div>
+    
+    <div class="progress-container">
+      <div class="progress-bar" style="width: 0%"></div>
+    </div>
+
     <h2 id="question-text"></h2>
     <div id="options-container" class="options"></div>
+    
     <div id="score-container" class="score" style="display: none;"></div>
-    <div id="feedback" class="feedback" style="display: none; font-size: 1.2em; font-weight: bold; margin-top: 12px; text-align: center;"></div>
+    <div id="feedback" class="feedback" style="display: none;"></div>
   </div>
   
   <button id="next-button" class="next-button">Next</button>
+  
   <div class="result-buttons">
-    <button id="new-quiz-button" class="result-button">New Quiz</button>
-    <button id="restart-quiz-button" class="result-button">Restart</button>
+    <button id="new-quiz-button" class="result-button">
+      <span class="button-icon">🔄</span>
+      <span class="button-text">New Quiz</span>
+    </button>
+    <button id="restart-quiz-button" class="result-button">
+      <span class="button-icon">↺</span>
+      <span class="button-text">Restart</span>
+    </button>
   </div>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>
