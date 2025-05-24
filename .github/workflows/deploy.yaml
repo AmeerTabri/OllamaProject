@@ -44,7 +44,7 @@ jobs:
 
   Deploy-App:
     runs-on: ubuntu-latest
-    name: Deploy App (Flask/Web)
+    name: Deploy Web App
     needs: Deploy-Ollama
 
     steps:
