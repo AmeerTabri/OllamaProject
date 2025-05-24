@@ -39,30 +39,30 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/quiz", methods=["POST"])
-def get_quiz():
-    data = request.get_json()
-    count = int(data.get("count", 5))
-
-    # Loop back to start if count exceeds available questions
-    result = [quizzes[(quiz_index + i) % len(quizzes)] for i in range(count)]
-
-    global quiz_index
-    quiz_index = (quiz_index + count) % len(quizzes)
-
-    return jsonify(result) 
-
-
 # @app.route("/quiz", methods=["POST"])
 # def get_quiz():
 #     data = request.get_json()
-#     topic = data.get("topic")
-#     difficulty = data.get("difficulty")
 #     count = int(data.get("count", 5))
 
-#     raw = generate_quiz(topic=topic, count=count, difficulty=difficulty)
-#     parsed = parse_quiz_response(raw)
-#     return jsonify(parsed)  # parsed should be a list of question dicts
+#     # Loop back to start if count exceeds available questions
+#     result = [quizzes[(quiz_index + i) % len(quizzes)] for i in range(count)]
+
+#     global quiz_index
+#     quiz_index = (quiz_index + count) % len(quizzes)
+
+#     return jsonify(result) 
+
+
+@app.route("/quiz", methods=["POST"])
+def get_quiz():
+    data = request.get_json()
+    topic = data.get("topic")
+    difficulty = data.get("difficulty")
+    count = int(data.get("count", 5))
+
+    raw = generate_quiz(topic=topic, count=count, difficulty=difficulty)
+    parsed = parse_quiz_response(raw)
+    return jsonify(parsed)  # parsed should be a list of question dicts
  
 
 @app.get("/health")
