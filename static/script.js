@@ -90,7 +90,7 @@ startButton.addEventListener('click', async () => {
 
 async function fetchQuestion() {
     try {
-      const response = await fetch('http://localhost:8000/quiz', {
+      const response = await fetch('http://10.0.0.107:8000/quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
