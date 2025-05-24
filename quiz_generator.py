@@ -48,13 +48,10 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
 
     try:
         response = chat(
-            model="gemma:2b",
+            model="gemma3:4b-it-qat",
             messages=messages,
-            options={
-                "base_url": "http://34.213.168.160:11434",
-                "stream": False
-            }
-        ) 
+            options={"base_url": "http://34.213.168.160:11434"}  # or localhost if running on same instance
+        )
         # response = chat(model="gemma3:4b-it-qat", messages=messages)
         return response['message']['content']
     except Exception as e:
