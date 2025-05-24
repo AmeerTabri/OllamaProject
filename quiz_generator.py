@@ -47,16 +47,20 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
     ]
 
     try:
-        response = chat(
-            model="gemma:2b",
-            messages=messages,
-            options={
-                "base_url": "http://34.213.168.160:11434",
+        import requests
+        response = requests.post(
+            "http://34.213.168.160:11434/api/chat",
+            json={
+                "model": "gemma:2b",
+                "messages": messages,
                 "stream": False
             }
-        ) 
-        # response = chat(model="gemma3:4b-it-qat", messages=messages)
-        return response['message']['content']
+        )
+        if response.status_code == 200:
+            return response.json()['message']['content']
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+            return ""
     except Exception as e:
         print("Error fetching Ollama response:", e)
         return ""
