@@ -72,4 +72,4 @@ jobs:
 
       - name: Run deploy_app.sh
         run: |
-          ssh app "cd ~/${REPO_NAME} && bash deploy.sh"
+          ssh app "cd ~/${REPO_NAME} && bash deploy_app.sh"
