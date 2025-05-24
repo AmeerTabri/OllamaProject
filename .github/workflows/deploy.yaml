@@ -36,11 +36,13 @@ jobs:
               StrictHostKeyChecking no
           EOF
 
-      - name: Upload and Run deploy_ollama.sh
+      - name: Clone or Pull Repo on App EC2
         run: |
-          ssh ollama "mkdir -p ~/OllamaProject"
-          scp -o StrictHostKeyChecking=no deploy_ollama.sh ollama:~/OllamaProject/deploy_ollama.sh
-          ssh ollama "bash ~/OllamaProject/deploy_ollama.sh"
+          ssh app "if [ -d ~/${REPO_NAME} ]; then cd ~/${REPO_NAME} && git pull origin main; else git clone ${REPO_URL} ~/${REPO_NAME}; fi"
+
+      - name: Run deploy_ollama.sh
+        run: |
+          ssh app "cd ~/${REPO_NAME} && bash deploy_ollama.sh"
 
   Deploy-App:
     runs-on: ubuntu-latest
