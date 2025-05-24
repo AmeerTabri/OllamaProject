@@ -12,42 +12,39 @@ env:
 
 jobs:
   Deploy-Ollama:
-  runs-on: ubuntu-latest
-  name: Deploy Ollama Service
+    runs-on: ubuntu-latest
+    name: Deploy Ollama Service
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Configure SSH for Ollama
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-        EC2_HOST: ${{ secrets.EC2_OLLAMA_HOST }}
-        EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
-      run: |
-        mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/private_key
-        chmod 600 ~/.ssh/private_key
-        cat > ~/.ssh/config << EOF
-        Host ollama
-            HostName $EC2_HOST
-            User $EC2_USERNAME
-            IdentityFile ~/.ssh/private_key
-            StrictHostKeyChecking no
-        EOF
+      - name: Configure SSH for Ollama
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.EC2_OLLAMA_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/private_key
+          chmod 600 ~/.ssh/private_key
+          cat > ~/.ssh/config << EOF
+          Host ollama
+              HostName $EC2_HOST
+              User $EC2_USERNAME
+              IdentityFile ~/.ssh/private_key
+              StrictHostKeyChecking no
+          EOF
 
-    - name: Upload and Run deploy_ollama.sh
-      run: |
-        ssh ollama "mkdir -p ~/OllamaProject"
-        scp -o StrictHostKeyChecking=no deploy_ollama.sh ollama:~/OllamaProject/deploy_ollama.sh
-        ssh ollama "bash ~/OllamaProject/deploy_ollama.sh"
-
-
+      - name: Upload and Run deploy_ollama.sh
+        run: |
+          ssh ollama "mkdir -p ~/OllamaProject"
+          scp -o StrictHostKeyChecking=no deploy_ollama.sh ollama:~/OllamaProject/deploy_ollama.sh
+          ssh ollama "bash ~/OllamaProject/deploy_ollama.sh"
 
   Deploy-App:
     runs-on: ubuntu-latest
     name: Deploy App (Flask/Web)
-
     needs: Deploy-Ollama
 
     steps:
