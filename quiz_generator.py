@@ -47,16 +47,20 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
     ]
 
     try:
+        print("Sending request to Ollama...")
         response = chat(
             model="gemma3:1b",
             messages=messages,
             options={"base_url": "http://34.213.168.160:11434"}
         )
-        # response = chat(model="gemma3:4b-it-qat", messages=messages)
+        print("Response received:", response)
         return response['message']['content']
     except Exception as e:
+        import traceback
         print("Error fetching Ollama response:", e)
+        traceback.print_exc()
         return ""
+    
 
 def parse_quiz_response(raw_response: str):
     """Parse the raw Ollama response into a structured list of quiz questions."""
