@@ -2,6 +2,8 @@ from ollama import chat
 import json
 import time
 
+import requests
+
 # Descriptions per topic used in the prompt
 topic_descriptions = {
     "history": "about important historical events, famous figures, and major time periods.",
@@ -25,8 +27,9 @@ topic_examples = {
     "fashion": "Which designer pioneered the 'New Look' in post-WWII fashion? | Coco Chanel | Christian Dior | Giorgio Armani | Yves Saint Laurent | 1"
 }
 
+import requests
+
 def generate_quiz(topic="geography", count=5, difficulty="hard"):
-    """Generate quiz questions from Ollama using topic, count, and difficulty."""
     messages = [
         {
             "role": "system",
@@ -37,7 +40,7 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
                 Question text | Option A | Option B | Option C | Option D | Correct Option Index (0-3)
 
                 Example:
-                {topic_examples.get(topic, "What is the capital of France? | London | Paris | Berlin | Madrid | 1")}
+                {topic_examples.get(topic)}
 
                 Only return {count} questions — no explanations, no extra text, no numbering.
                 The difficulty level of the questions should be: {difficulty}.
@@ -47,20 +50,26 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
     ]
 
     try:
-        print("Sending request to Ollama...")
-        response = chat(
-            model="gemma3:1b",
-            messages=messages,
-            options={"base_url": "http://34.213.168.160:11434"}
+        response = requests.post(
+            "http://34.213.168.160:11434/api/chat",
+            json={"model": "gemma3:1b", "messages": messages},
+            stream=True
         )
-        print("Response received:", response)
-        return response['message']['content']
+
+        content = ""
+        for line in response.iter_lines():
+            if line:
+                chunk = line.decode("utf-8")
+                data = json.loads(chunk)
+                if "message" in data and "content" in data["message"]:
+                    content += data["message"]["content"]
+
+        return content
+
     except Exception as e:
-        import traceback
         print("Error fetching Ollama response:", e)
-        traceback.print_exc()
         return ""
-    
+   
 
 def parse_quiz_response(raw_response: str):
     """Parse the raw Ollama response into a structured list of quiz questions."""
