@@ -16,7 +16,7 @@ sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl restart ollama
 sleep 2
-ollama pull gemma3:4b-it-qat
+ollama pull gemma3:1b
 
 # Step 4: Health check
 if ! systemctl is-active --quiet ollama; then

@@ -48,9 +48,9 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
 
     try:
         response = chat(
-            model="gemma3:4b-it-qat",
+            model="gemma3:1",
             messages=messages,
-            options={"base_url": "http://34.213.168.160:11434"}  # or localhost if running on same instance
+            options={"base_url": "http://34.213.168.160:11434"}   
         )
         # response = chat(model="gemma3:4b-it-qat", messages=messages)
         return response['message']['content']
