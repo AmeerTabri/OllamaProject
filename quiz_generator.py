@@ -1,7 +1,6 @@
 from ollama import chat
 import json
 import time
-
 import requests
 
 # Descriptions per topic used in the prompt
@@ -49,7 +48,7 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
 
     try:
         response = requests.post(
-            "http://34.213.168.160:11434/api/chat",
+            "http://10.0.0.107:11434/api/chat",
             json={"model": "gemma3:1b", "messages": messages},
             stream=True
         )
