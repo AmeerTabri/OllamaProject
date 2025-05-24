@@ -47,12 +47,12 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
     ]
 
     try:
-        # response = chat(
-        #     model="gemma3:4b-it-qat",
-        #     messages=messages,
-        #     options={"base_url": "http://localhost:11434"}
-        # )
-        response = chat(model="gemma3:4b-it-qat", messages=messages)
+        response = chat(
+            model="gemma3:4b-it-qat",
+            messages=messages,
+            options={"base_url": "http://10.0.0.107:11434"}
+        )
+        # response = chat(model="gemma3:4b-it-qat", messages=messages)
         return response['message']['content']
     except Exception as e:
         print("Error fetching Ollama response:", e)
