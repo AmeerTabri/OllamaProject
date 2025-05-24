@@ -26,11 +26,6 @@ topic_examples = {
 }
 
 def generate_quiz(topic="geography", count=5, difficulty="hard"):
-    return (
-        "What is the capital of France? | London | Paris | Berlin | Madrid | 1\n"
-        "What is the largest planet? | Earth | Venus | Jupiter | Mars | 2\n"
-        "Who wrote Hamlet? | Dickens | Shakespeare | Tolstoy | Homer | 1"
-    )
     """Generate quiz questions from Ollama using topic, count, and difficulty."""
     messages = [
         {
@@ -53,9 +48,9 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
 
     try:
         response = chat(
-            model="gemma3:4b-it-qat",
+            model="gemma:2b",
             messages=messages,
-            options={"base_url": "http://34.213.168.160:11434"}  # or localhost if running on same instance
+            options={"base_url": "http://34.213.168.160:11434"} 
         )
         # response = chat(model="gemma3:4b-it-qat", messages=messages)
         return response['message']['content']
