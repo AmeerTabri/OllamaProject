@@ -11,7 +11,18 @@ topic_descriptions = {
     "soccer": "about soccer players, soccer teams, and soccer history.",
     "movies": "about popular films, actors, genres, and movie history.",
     "Astronomy": "about space, planets, stars, galaxies, and space missions.",
-    "fashion": "about fashion trends, designers, styles, and fashion history."
+    "fashion": "about fashion trends, brands, styles, and fashion history."
+}
+
+topic_examples = {
+    "history": "Who was the first President of the United States? | George Washington | Abraham Lincoln | Thomas Jefferson | John Adams | 0",
+    "geography": "What is the capital of France? | London | Paris | Berlin | Madrid | 1",
+    "physics": "What is the unit of force? | Newton | Joule | Watt | Pascal | 0",
+    "computer-science": "Which data structure uses LIFO? | Queue | Tree | Stack | Graph | 2",
+    "soccer": "Who won the UEFA Champions League in 2007? | AC Milan | Liverpool | Barcelona | Real Madrid | 0",
+    "movies": "Which movie won Best Picture in 1994? | Titanic | Forrest Gump | Pulp Fiction | The Shawshank Redemption | 1",
+    "Astronomy": "Which planet has the most moons? | Earth | Mars | Jupiter | Saturn | 3",
+    "fashion": "Which designer pioneered the 'New Look' in post-WWII fashion? | Coco Chanel | Christian Dior | Giorgio Armani | Yves Saint Laurent | 1"
 }
 
 def generate_quiz(topic="geography", count=5, difficulty="hard"):
@@ -26,7 +37,7 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
                 Question text | Option A | Option B | Option C | Option D | Correct Option Index (0-3)
 
                 Example:
-                What is the capital of France? | London | Paris | Berlin | Madrid | 1
+                {topic_examples.get(topic, "What is the capital of France? | London | Paris | Berlin | Madrid | 1")}
 
                 Only return {count} questions — no explanations, no extra text, no numbering.
                 The difficulty level of the questions should be: {difficulty}.
@@ -36,11 +47,12 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
     ]
 
     try:
-        response = chat(
-            model="gemma3:4b-it-qat",
-            messages=messages,
-            options={"base_url": "http://localhost:11434"}
-        )
+        # response = chat(
+        #     model="gemma3:4b-it-qat",
+        #     messages=messages,
+        #     options={"base_url": "http://localhost:11434"}
+        # )
+        response = chat(model="gemma3:4b-it-qat", messages=messages)
         return response['message']['content']
     except Exception as e:
         print("Error fetching Ollama response:", e)
@@ -85,7 +97,7 @@ def print_quiz(questions):
 
 if __name__ == "__main__":
     init_time = time.time()
-    raw = generate_quiz(topic="fashion", count=5, difficulty="medium")
+    raw = generate_quiz(topic="physics", count=5, difficulty="hard")
     print("Raw:\n", raw)
     parsed = parse_quiz_response(raw)
     print_quiz(parsed)
