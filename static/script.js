@@ -90,7 +90,7 @@ startButton.addEventListener('click', async () => {
 
 async function fetchQuestion() {
     try {
-      const response = await fetch('http://34.213.168.160:8000/quiz', {
+      const response = await fetch('http://quizai.fursa.click:8000/quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
