@@ -3,7 +3,7 @@ from flask_cors import CORS
 from quiz_generator import generate_quiz, parse_quiz_response
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 quiz_index = 0
 quizzes = [
@@ -72,4 +72,3 @@ def health():
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8000)
-

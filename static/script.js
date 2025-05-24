@@ -102,15 +102,13 @@ async function fetchQuestion() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
   
       const data = await response.json();
-      if (!Array.isArray(data)) throw new Error("Expected an array of quiz questions.");
-      return data;
+      return data; // this is already an array of questions
     } catch (error) {
       console.error('Error fetching questions:', error);
       loadingMessage.textContent = "Error loading questions.";
       return [];
     }
-}
-  
+}   
 
 function loadNextQuestion() {
   nextButton.style.display = "none";
