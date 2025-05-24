@@ -50,7 +50,7 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
         response = chat(
             model="gemma3:4b-it-qat",
             messages=messages,
-            options={"base_url": "http://10.0.0.107:11434"}
+            options={"base_url": "http://34.213.168.160:11434"}
         )
         # response = chat(model="gemma3:4b-it-qat", messages=messages)
         return response['message']['content']
