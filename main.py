@@ -8,9 +8,9 @@ CORS(app)
 quiz_index = 0
 quizzes = [
     {
-        "question": "What is the capital of France?",
-        "options": ["London", "Paris", "Berlin", "Madrid"],
-        "answer": 1
+        "question": "What is the capital of Australia?",
+        "options": ["Sydney", "Melbourne", "Canberra", "Brisbane"],
+        "answer": 2
     },
     {
         "question": "Which planet in our solar system has the most moons?",
