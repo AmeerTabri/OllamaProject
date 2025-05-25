@@ -48,8 +48,8 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
 
     try:
         response = requests.post(
-            "http://localhost:11434/api/chat",
-            # "http://10.0.0.107:11434/api/chat",
+            # "http://localhost:11434/api/chat",
+            "http://10.0.0.107:11434/api/chat",
             json={"model": "gemma3:1b", "messages": messages},
             stream=True
         )
@@ -114,4 +114,3 @@ if __name__ == "__main__":
     print_quiz(parsed)
     finish_time = time.time()
     print(f"Time taken: {finish_time - init_time} seconds")
-    
