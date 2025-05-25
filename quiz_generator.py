@@ -16,11 +16,11 @@ topic_descriptions = {
 }
 
 topic_examples = {
-    "history": "Who was the first President of the United States? | George Washington | Abraham Lincoln | Thomas Jefferson | John Adams | 0",
+    "history": "Who was the first President of the United States? | Abraham Lincoln | George Washington | Thomas Jefferson | John Adams | 1",
     "geography": "What is the capital of France? | London | Paris | Berlin | Madrid | 1",
     "physics": "What is the unit of force? | Newton | Joule | Watt | Pascal | 0",
     "computer-science": "Which data structure uses LIFO? | Queue | Tree | Stack | Graph | 2",
-    "soccer": "Who won the UEFA Champions League in 2007? | AC Milan | Liverpool | Barcelona | Real Madrid | 0",
+    "soccer": "Who won the UEFA Champions League in 2007? | Liverpool | Barcelona | AC Milan | Real Madrid | 2",        
     "movies": "Which movie won Best Picture in 1994? | Titanic | Forrest Gump | Pulp Fiction | The Shawshank Redemption | 1",
     "Astronomy": "Which planet has the most moons? | Earth | Mars | Jupiter | Saturn | 3",
     "fashion": "Which designer pioneered the 'New Look' in post-WWII fashion? | Coco Chanel | Christian Dior | Giorgio Armani | Yves Saint Laurent | 1"
@@ -50,7 +50,7 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
         response = requests.post(
             # "http://localhost:11434/api/chat",
             "http://10.0.0.107:11434/api/chat",
-            json={"model": "gemma:2b", "messages": messages},
+            json={"model": "gemma3:1b", "messages": messages},
             stream=True
         )
 
