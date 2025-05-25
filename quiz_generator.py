@@ -48,8 +48,8 @@ def generate_quiz(topic="geography", count=5, difficulty="hard"):
 
     try:
         response = requests.post(
-            # "http://localhost:11434/api/chat",
-            "http://10.0.0.107:11434/api/chat",
+            "http://localhost:11434/api/chat",
+            # "http://10.0.0.107:11434/api/chat",
             json={"model": "gemma3:1b", "messages": messages},
             stream=True
         )
