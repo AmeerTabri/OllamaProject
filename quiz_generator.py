@@ -114,3 +114,4 @@ if __name__ == "__main__":
     print_quiz(parsed)
     finish_time = time.time()
     print(f"Time taken: {finish_time - init_time} seconds")
+    
