@@ -26,6 +26,7 @@ topic_examples = {
     "fashion": "Which designer pioneered the 'New Look' in post-WWII fashion? | Coco Chanel | Christian Dior | Giorgio Armani | Yves Saint Laurent | 1"
 }
 
+
 def generate_quiz(topic="geography", count=5, difficulty="hard"):
     messages = [
         {
