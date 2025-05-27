@@ -1,7 +1,10 @@
-from ollama import chat
-import json
+import os
 import time
-import requests
+import json
+from openai import OpenAI
+
+# Create client with API key
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Descriptions per topic used in the prompt
 topic_descriptions = {
@@ -26,51 +29,39 @@ topic_examples = {
     "fashion": "Which designer pioneered the 'New Look' in post-WWII fashion? | Coco Chanel | Christian Dior | Giorgio Armani | Yves Saint Laurent | 1"
 }
 
-def generate_quiz(topic="geography", count=5, difficulty="hard"):
-    messages = [
-        {
-            "role": "system",
-            "content": f"""
-                You are a quiz question generator for the topic of {topic}.
-                Generate {count} multiple-choice questions {topic_descriptions.get(topic, '')}
-                Each question must be in this exact format:
-                Question text | Option A | Option B | Option C | Option D | Correct Option Index (0-3)
+def generate_quiz(topic="geography", count=5, difficulty="medium"):
+    prompt = f"""
+    You are a quiz generator for the topic of {topic}.
+    Generate {count} multiple-choice questions {topic_descriptions.get(topic, '')}
+    Each question must be in this exact format:
+    Question text | Option A | Option B | Option C | Option D | Correct Option Index (0-3)
 
-                Example:
-                {topic_examples.get(topic)}
+    Example:
+    {topic_examples.get(topic)}
 
-                Only return {count} questions — no explanations, no extra text, no numbering.
-                The difficulty level of the questions should be: {difficulty}.
-            """
-        },
-        {"role": "user", "content": f"Generate {count} questions."}
-    ]
+    Only return {count} questions — no explanations, no extra text, no numbering.
+    The difficulty level of the questions should be: {difficulty}.
+    """
 
     try:
-        response = requests.post(
-            # "http://localhost:11434/api/chat",
-            "http://10.0.0.107:11434/api/chat",
-            json={"model": "gemma3:1b", "messages": messages},
-            stream=True
+        start = time.time()
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful quiz generator."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7
         )
+        elapsed = time.time() - start
+        print(f"Time taken: {elapsed:.2f} seconds")
 
-        content = ""
-        for line in response.iter_lines():
-            if line:
-                chunk = line.decode("utf-8")
-                data = json.loads(chunk)
-                if "message" in data and "content" in data["message"]:
-                    content += data["message"]["content"]
-
-        return content
-
+        return response.choices[0].message.content
     except Exception as e:
-        print("Error fetching Ollama response:", e)
+        print("Error fetching ChatGPT response:", e)
         return ""
-   
 
 def parse_quiz_response(raw_response: str):
-    """Parse the raw Ollama response into a structured list of quiz questions."""
     try:
         lines = [line.strip() for line in raw_response.split('\n') if line.strip()]
         questions = []
@@ -93,7 +84,6 @@ def parse_quiz_response(raw_response: str):
         return []
 
 def print_quiz(questions):
-    """Print multiple quiz questions to the console."""
     if not questions or not isinstance(questions, list):
         print("No questions available.")
         return
@@ -107,10 +97,9 @@ def print_quiz(questions):
         print("=" * 20)
 
 if __name__ == "__main__":
-    init_time = time.time()
+    start_time = time.time()
     raw = generate_quiz(topic="physics", count=5, difficulty="hard")
     print("Raw:\n", raw)
     parsed = parse_quiz_response(raw)
     print_quiz(parsed)
-    finish_time = time.time()
-    print(f"Time taken: {finish_time - init_time} seconds")
+    print(f"Total time: {time.time() - start_time:.2f} seconds")
